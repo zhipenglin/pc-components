@@ -1,0 +1,65 @@
+.tree ul,.tree ul ul{
+    padding-left: 30px;
+}
+.tree .option{
+    margin-left: 5px;
+    display: inline-block;
+}
+.tree .option a{
+    color: #0095cd;
+    display: none;
+}
+
+.tree .node:hover .option a{
+    display:inline-block;
+}
+
+.tree a,.tree a:hover{
+    text-decoration: none;
+    line-height: 30px;
+}
+.tree .center-icon{
+    width: 13px;
+    height: 17px;
+    display: inline-block;
+    vertical-align: middle;
+    background: url("oa_ico.png") no-repeat  -15px -56px;
+}
+.tree .center-icon.none{
+    background:none;
+}
+.tree .open.center-icon{
+    background-position: -33px -56px;
+}
+.tree .title-icon{
+    width: 16px;
+    height: 13px;
+    vertical-align: middle;
+    background: url("oa_ico.png") no-repeat -48px -2px;
+    position: relative;
+    top: -1px;
+}
+.tree a span{
+    display: inline-block;
+}
+.tree .open.title-icon{
+    background-position: -47px -18px;
+}
+.tree li ul{
+    background: url("line_conn.gif") repeat-y -4px 1px;
+}
+.tree .son-icon{
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    vertical-align: middle;
+    background: url("oa_ico.png") no-repeat -49px -55px;
+    margin-right: 3px;
+}
+.tree .node:hover  .item-text{
+    color: #ff0000;
+}
+
+.tree{
+    user-select: none;
+}

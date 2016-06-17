@@ -1,0 +1,42 @@
+.img-item{
+    width: 80px;
+    height: 80px;
+    float: left;
+    position: relative;
+    margin: 8px;
+}
+
+.img-item img{
+    width: 80px;
+    height: 80px;
+}
+
+.img-item.add-button{
+    background: url("./add_ico.png") no-repeat center #ededed;
+    border: 1px solid #ededed;
+}
+
+.img-close{
+    width:16px;
+    height:16px;
+    background: url("./del.png") no-repeat center;
+    top: -8px;
+    right: -8px;
+    position: absolute;
+}
+
+.gray-box{
+    position: absolute;
+    top: 37px;
+    height: 5px;
+    border-radius: 3px;
+    width: 80px;
+    background: #999999;
+}
+.gray-box .blue-box{
+    position: absolute;
+    top: 0px;
+    height: 5px;
+    border-radius: 3px;
+    background: #127cb0;
+}

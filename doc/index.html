@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>oa组件库文档</title>
+    <script src="../../lib.js"></script>
+</head>
+<style>
+    .header h1{
+        text-align: center;
+    }
+    .main{
+        width:900px;
+        margin: 0 auto;
+    }
+</style>
+<body>
+    <div class="header">
+        <h1>OA组件库文档</h1>
+    </div>
+    <div class="main">
+        <h2>
+            组件列表：
+        </h2>
+        <div>
+            <section>
+                <h4>一.对话框</h4>
+                <p>
+                    弹出一个弹层
+                </p>
+                <div>
+                    <div>
+                        <h5>1.基本弹框：</h5>
+                        <p>$.art(options) 返回art对象</p>
+
+                        <p><button onclick="$.art({title:'我是对话框',content:'我是对话框我是对话框我是对话框我是对话框'}).show();">点击弹出对话框</button></p>
+
+                        <p>
+                            <h6>参数options:</h6><br>
+                            title:对话框标题，默认为空，标题行不显示<br>
+                            content:对话框内容，默认为空<br>
+                            drag:是否可以拖拽，默认为false<br>
+                        </p>
+                        <p>
+                            <script>
+                                function addDialog(){
+                                    window.dialog=$.art({title:'我是对话框',content:'对话框对话框对话框对话框'});
+                                }
+                                addDialog();
+                            </script>
+                            <h6>接口<button onclick="addDialog()">添加一个对话框，但不显示</button></h6>
+                            show:显示对话框 返回art对象 $.art(options).show()(点击右上角x为执行close方法)<button onclick="dialog.show()">点击显示对话框</button><br>
+                            hide:隐藏对话框（不从dom移除）返回art对象 $.art(options).hide() <button onclick="dialog.hide();">隐藏对话框</button><br>
+                            close:关闭对话框（从dom移除） 返回空 $.art(options).close() <button onclick="dialog.close()">点击关闭对话框</button><br>
+                            content:设置对话框内容 返回art对象 $.art(options).content(html) <button onclick="dialog.content('设置对话框内容为哈哈哈')">设置对话框内容为哈哈哈</button><br>
+                            title:设置对话框的标题 返回art对象 $.art(options).title(str) <button onclick="dialog.title('设置对话框标题为哈哈哈')">设置对话框标题为哈哈哈</button><br>
+                            width:设置对话框宽度 返回art对象 $.art(options).width(number) <button onclick="dialog.width(500)">设置对话框宽度为500</button><br>
+                            height:设置对话框高度 返回art对象 $.art(options).height(number) <button onclick="dialog.height(500)">设置对话框高度为500</button><br>
+                            reset:对话框重新定位 返回art对象 $.art(options).reset() <button onclick="dialog.reset();">重新定位对话框</button><br>
+                            getId:得到内容区域的ID 返回ID $.art(options).getId() <button onclick="alert(dialog.getId());">得到对话框ID</button><br>
+                        </p>
+                    </div>
+                    <div>
+                        <h5>form弹框</h5>
+                        <p>$.artForm(options) 返回artForm对象</p>
+                        <p>继承自art组件，添加了弹框下面的确定取消栏，弹出方式为模态弹出，默认可以拖拽</p>
+                        <p><button onclick="$.artForm({title:'我是对话框',content:'我是对话框我是对话框我是对话框我是对话框'}).show();">点击弹出对话框</button></p>
+                        <p>
+                            <h6>参数</h6>
+                            options:<br>
+                            ok:点击确定执行方法，默认为function(){};<br>
+                            cancel:点击取消执行方法，默认为 function(){this.close();}<br>
+                            drag:是否可以拖拽，默认为true(覆盖)<br>
+                        </p>
+                        <p>
+                        <h6>接口</h6>
+                        <script>
+                            function addDialogForm(){
+                                window.dialogForm=$.artForm({title:'我是对话框',content:'对话框对话框对话框对话框'});
+                            }
+                            addDialogForm();
+                        </script>
+                        show:以模态方式显示对话框(覆盖) $.artForm(options).show() <button onclick="dialogForm.show()">点击显示对话框</button><br>
+                        </p>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <h4>二.form组件</h4>
+                <p>
+                    用以处理form表单，取值，校验，提交等操作
+                </p>
+                <div>
+                    <div>
+                        <h5>1.基本表单：</h5>
+                        <p>$(slector).form(options) 返回jquery对象,可以将selector选择器命中的所有form表单元素全部绑定到组件 返回jquery对象 可以在该表单元素上通过$(selector).data('form')得到form组件对象</p>
+                        <p>表单规则：<br>
+                            在&lt;form action="/action/submit" method="POST" &gt;&lt;/form&gt;标签中 action为用户提交表单的url地址 method为提交表单的方法GET/POST默认为POST<br>
+                            在每个有效表单字段中&lt;input type="text" name="field_1" des="字段名称" fac="校验规则" &gt; 务必包含name作为提交时的字段key值，des作为名称用于提示语的合成fac为校验规则<br>
+                            fac的校验规则有以下几种：<br>
+                            REQ:必须型校验，校验规则包含该字段时，字段值为空字符串时提示错误
+                            length:长度型校验，写法为 5 或 1-10表示该字段必须大于5个字符或必须在1-10个字符之间，不满足条件提示错误
+                            regExp:正则校验，可以包含以下几种 Char只允许为字母 Num只允许为数字 Email电子邮件格式 Tel手机号码 Tels手机或座机 Pwd不允许有空格的密码格式 ZH_CN只允许为中文 NOT_EN不能包含英文字符 NUM_OR_CHAR只允许为数字或字母 NUM_AND_CHAR必须至少包含一个数字和一个字母 NUM_OR_CHAR_UNDERLINE只允许数字、字母或下划线
+                            可以包含以上的一种或几种，不过要注意条件之间不能互斥否则该字段验证永远通不过 该条件可以支持扩展
+                            server:服务器或用户自定义型校验，主要用于异步校验（待开发）
+                            <br>
+                            每个字段需要有一个class为.tipClass(error).fieldName的标签作为显示错误提示信息的地方
+                        </p>
+                        <p>
+                            <h6>参数options:</h6>
+                        msgDefault:'请输入%s',<br>
+                        msgRequired:'%s不能为空',<br>
+                        msgLength:'%s的长度必须为%s个字符',<br>
+                        msgMax:'%s最多为%s个字符',<br>
+                        msgChar:'%s只允许为字母',<br>
+                        msgNum:'%s只允许为数字',<br>
+                        msgEmail:'请输入正确的%s',<br>
+                        msgTel:'请输入正确的11位%s',<br>
+                        msgTels:'%s必须为手机号或座机号',<br>
+                        msgPwd:'%s不允许有空格',<br>
+                        msgZH_CN:'%s只允许为中文',<br>
+                        msgNOT_EN:'%s不能包含英文字符',<br>
+                        msgNUM_OR_CHAR:'%s只允许为数字或字母',<br>
+                        NUM_AND_CHAR:'%s必须至少包含一个数字和一个字母',<br>
+                        msgNUM_OR_CHAR_UNDERLINE:'%s只允许数字、字母或下划线',<br>
+                        (以上为提示消息模板)<br>
+                        tipClass:'error' 提示消息class,<br>
+                        errorTemplate(msg){
+                        return `<i></i>${msg}`;
+                        } 错误消息模板,<br>
+                        beforeSubmit(){} 表单提交前回调,<br>
+                        success(){} 表单提交成功回调,<br>
+                        dataChangeEvent:['input','blur','change'] 改变数据触发事件,<br>
+                        validateEvent:['blur'] 验证操作触发事件,<br>
+                        fieldSelector:'input:not([type]),input[type="color"],input[type="date"],input[type="datetime"],input[type="datetime-local"],input[type="email"],input[type="file"],input[type="hidden"],input[type="month"],input[type="number"],input[type="password"],input[type="range"],input[type="search"],input[type="tel"],input[type="text"],input[type="time"],input[type="url"],input[type="week"],input[type="checkbox"],input[type="radio"],select,textarea'<br>
+                        有效表单标签
+                        </p>
+                        <p>
+                            <h6>接口</h6>
+                            getFormData() 得到当前表单的数据<br>
+                            validate(field) 手动触发该字段的校验
+                        </p>
+                        <p>
+                            <h6>例子</h6>
+                        <form action="/test">
+                            <input type="text" name="input_1" des="输入框1" fac="REQ 1-5"/>
+                            <span class="error input_1"></span>
+                            <select name="select_1" name="select_1" des="选择1" fac="REQ">
+                                <option value="">请选择</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                            </select>
+                            <span class="error select_1"></span>
+                            <input type="checkbox" name="check_box" des="多选框" fac="REQ" value="1"/>
+                            <input type="checkbox" name="check_box" des="多选框" fac="REQ" value="2"/>
+                            <input type="checkbox" name="check_box" des="多选框" fac="REQ" value="3"/>
+                            <span class="error check_box"></span>
+                            <button type="button" onclick="console.log(myForm.getFormData());">获取表单数据</button>
+                        </form>
+                        <script>
+                            var myForm=$('form').form().data('form');
+                        </script>
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
