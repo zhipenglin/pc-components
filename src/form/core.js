@@ -118,7 +118,7 @@ class Form{
         if(this.middleware[name]&&this.middleware[name].value!==this.data[name]&&this.middleware[name].func&&this.middleware[name].func.length>0){
             Promise.all(this.middleware[name].func.map(n=>{
                 return new Promise((resolve,reject)=>{
-                    n(resolve,reject);
+                    n(this.data[name],resolve,reject);
                 });
             })).then(()=>{
                 this.middleware[name].value=this.data[name];

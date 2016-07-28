@@ -18,11 +18,13 @@
             console.log('出错啦');
             return false;
         }
-    }).data('form').use('user_name',function(resolve,reject){
+    }).data('form').use('user_name',function(value,resolve,reject){
+        console.log(value);
         setTimeout(function(){
             resolve();
         },2000);
-    }).use('user_name',function(resolve,reject){
+    }).use('user_name',function(value,resolve,reject){
+        console.log(value);
         setTimeout(function(){
             reject('错误');
         },2000);
