@@ -32,6 +32,8 @@ class Form{
         this.extra=[];
         this.getFormData();
         this._bindEvent();
+
+        this.middleware={};
     }
     addExtra(obj){
         if(obj.$el.is('[name]')&&$.isFunction(obj.val)){
@@ -48,6 +50,18 @@ class Form{
             this.data[val['name']]=val['value'];
         });
         return this.data;
+    }
+    use(name,callback){
+        if(!this.middleware[name]){
+            this.middleware[name]={
+                value:null
+            };
+        }
+        if(!$.isArray(this.middleware[name].func)){
+            this.middleware[name].func=[];
+        }
+        this.middleware[name].func.push(callback);
+        return this;
     }
     validate(field){
         field=$(field);
@@ -101,10 +115,23 @@ class Form{
         if(!typePass){
             return this;
         }
-        this.validatePass[name]=true;
-        //服务器端校验及用户自定义检验
-        // todo 稍后实现
-        tip.html('');
+        if(this.middleware[name]&&this.middleware[name].value!==this.data[name]&&this.middleware[name].func&&this.middleware[name].func.length>0){
+            Promise.all(this.middleware[name].func.map(n=>{
+                return new Promise((resolve,reject)=>{
+                    n(resolve,reject);
+                });
+            })).then(()=>{
+                this.middleware[name].value=this.data[name];
+                this.validatePass[name]=true;
+                tip.html('');
+            }).catch((message)=>{
+                tip.html(this.options.errorTemplate(message));
+            });
+            tip.html(this.options.errorTemplate('正在执行校验'));
+        }else{
+            this.validatePass[name]=true;
+            tip.html('');
+        }
         return this;
     }
     validateAll(){
@@ -149,7 +176,8 @@ class Form{
             return this.$el.ajax({
                 type:this.method,
                 url:this.action,
-                data:this.data
+                data:this.data,
+                error:this.options.error
             }).success((res)=>{
                 this.options.success.call(this,res);
                 return res;
@@ -194,6 +222,7 @@ class Form{
             },
             beforeSubmit(){},
             success(){},
+            error(){},
             dataChangeEvent:['input','blur','change','form-dataChange'],
             validateEvent:['blur','form-validate'],
             fieldSelector:'.form-img[name],input:not([type]),input[type="color"],input[type="date"],input[type="datetime"],input[type="datetime-local"],input[type="email"],input[type="file"],input[type="hidden"],input[type="month"],input[type="number"],input[type="password"],input[type="range"],input[type="search"],input[type="tel"],input[type="text"],input[type="time"],input[type="url"],input[type="week"],input[type="checkbox"],input[type="radio"],select,textarea'

@@ -12,14 +12,14 @@
 }
 
 .img-item.add-button{
-    background: url("./add_ico.png") no-repeat center #ededed;
+    background: url("add_ico.png") no-repeat center #ededed;
     border: 1px solid #ededed;
 }
 
 .img-close{
     width:16px;
     height:16px;
-    background: url("./del.png") no-repeat center;
+    background: url("del.png") no-repeat center;
     top: -8px;
     right: -8px;
     position: absolute;

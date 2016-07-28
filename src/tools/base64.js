@@ -3,7 +3,7 @@
  */
 import $ from 'jquery'
 
-import base64 from 'Base64'
+import base64 from 'base64'
 
 $.base64=function(str){
     if(str){
