@@ -12,6 +12,16 @@ class Tree{
         this.$html=$(this.options.outTemplate);
         this.render();
         this._bindEvent();
+
+        this.options.show||this.closeAll();
+    }
+    closeAll(){
+        this.$html.find('ul.children').hide();
+        this.$html.find('li.expandable.open,.center-icon.open').removeClass('open');
+    }
+    openAll(){
+        this.$html.find('ul.children').show();
+        this.$html.find('li.expandable,.center-icon').addClass('open');
     }
     render(){
         this.data.forEach((item)=>{
@@ -78,6 +88,7 @@ class Tree{
     }
     _default(){
         return {
+            show:true,
             option:[],
             outTemplate:'<ul class="tree"></ul>'
         };

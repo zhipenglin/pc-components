@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../dist/lib.js"></script>
+</head>
+<body>
+    <div class="tree-root"></div>
+    <button class="openAll">显示全部</button>
+    <button class="closeAll">关闭全部</button>
+</body>
+<script>
+    var tree=$('.tree-root').tree([
+        {
+            "id": "1",
+            "j_name": "\u603b\u4ee3\u74061",
+            "parent_id": "0",
+            "d_name": "\u9ad8\u5c42\u90e8\u95e8",
+            "name": "\u603b\u4ee3\u74061 | \u9ad8\u5c42\u90e8\u95e8",
+            "last_level": [
+                {
+                    "id": "2",
+                    "j_name": "\u8054\u5408\u521b\u59cb\u4eba",
+                    "parent_id": "1",
+                    "d_name": "\u9ad8\u5c42\u90e8\u95e8",
+                    "name": "\u8054\u5408\u521b\u59cb\u4eba | \u9ad8\u5c42\u90e8\u95e8",
+                    "last_level": [
+                        {
+                            "id": "3",
+                            "j_name": "\u9ad8\u7ea7\u5546\u52a1\u4eba\u5458",
+                            "parent_id": "2",
+                            "d_name": "\u603b\u90e8\u5546\u52a1\u90e8",
+                            "name": "\u9ad8\u7ea7\u5546\u52a1\u4eba\u5458 | \u603b\u90e8\u5546\u52a1\u90e8",
+                            "last_level": [
+
+                            ]
+                        },
+                        {
+                            "id": "5",
+                            "j_name": "\u6210\u90fd\u9ad8\u7ea7\u5546\u52a1\u4eba\u5458",
+                            "parent_id": "2",
+                            "d_name": "\u6210\u90fd\u5546\u52a1\u90e8",
+                            "name": "\u6210\u90fd\u9ad8\u7ea7\u5546\u52a1\u4eba\u5458 | \u6210\u90fd\u5546\u52a1\u90e8",
+                            "last_level": [
+
+                            ]
+                        },
+                        {
+                            "id": "6",
+                            "j_name": "\u603b\u90e8\u4e00\u822c\u5546\u52a1\u4eba\u5458",
+                            "parent_id": "2",
+                            "d_name": "\u603b\u90e8\u5546\u52a1\u90e8",
+                            "name": "\u603b\u90e8\u4e00\u822c\u5546\u52a1\u4eba\u5458 | \u603b\u90e8\u5546\u52a1\u90e8",
+                            "last_level": [
+
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],{
+        show:false
+    }).data('tree');
+
+    //添加了两个接口
+    $('.openAll').click(function(){
+        tree.openAll();
+    });
+    $('.closeAll').click(function(){
+        tree.closeAll();
+    });
+</script>
+</html>
