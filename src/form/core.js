@@ -26,7 +26,6 @@ class Form{
         this.$el=$el;
         this.options=$.extend({},this._default(),options);
         this.type=this._setType();
-        this.validatePass={};
         this.action=this.options.url||this.$el.attr('action');
         this.method=this.options.type||this.$el.attr('method');
         this.extra=[];
@@ -123,7 +122,7 @@ class Form{
                 tip.html(this.options.errorTemplate(message));
                 return false;
             });
-            if(!_.every(res)){
+            if(!res){
                 return false;
             }
         }
