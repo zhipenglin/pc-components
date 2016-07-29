@@ -109,21 +109,30 @@ class Form{
         }
 
         //用户自定义校验中间件
-        if(this.middleware[name]&&this.middleware[name].value!==this.data[name]&&this.middleware[name].func&&this.middleware[name].func.length>0){
-            tip.html(this.options.loadingTemplate());
-            let res=await Promise.all(this.middleware[name].func.map(n=>{
-                return new Promise((resolve,reject)=>{
-                    n(this.data[name],resolve,reject);
+        if(this.middleware[name]&&this.middleware[name].func&&this.middleware[name].func.length>0){
+            if(this.middleware[name].value==this.data[name]){
+                if(this.middleware[name].error!==false){
+                    tip.html(this.options.errorTemplate(this.middleware[name].error));
+                    return false;
+                }
+            }else{
+                tip.html(this.options.loadingTemplate());
+                let res=await Promise.all(this.middleware[name].func.map(n=>{
+                    return new Promise((resolve,reject)=>{
+                        n(this.data[name],resolve,reject);
+                    });
+                })).then(()=>{
+                    this.middleware[name].error=false;
+                    return true;
+                }).catch((message)=>{
+                    tip.html(this.options.errorTemplate(message));
+                    this.middleware[name].error=message;
+                    return false;
                 });
-            })).then(()=>{
                 this.middleware[name].value=this.data[name];
-                return true;
-            }).catch((message)=>{
-                tip.html(this.options.errorTemplate(message));
-                return false;
-            });
-            if(!res){
-                return false;
+                if(!res){
+                    return false;
+                }
             }
         }
         tip.html('');
