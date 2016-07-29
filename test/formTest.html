@@ -7,8 +7,10 @@
 </head>
 <body>
     <form action="/">
-        <input type="text" name="user_name" fac="REQ" des="用户名">
+        <input type="text" name="user_name" fac="REQ 3-8 ZH_CN" des="用户名" value="分额的">
         <span class="error user_name"></span>
+        <input type="text" name="phone" fac="REQ TEL" des="手机号">
+        <span class="error phone"></span>
         <input type="submit" value="提交">
     </form>
 </body>
@@ -30,7 +32,7 @@
         console.log(value);
         setTimeout(function(){
             resolve('错误');
-        },2000);
+        },5000);
     });
 </script>
 </html>

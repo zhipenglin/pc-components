@@ -63,7 +63,7 @@ class Form{
         this.middleware[name].func.push(callback);
         return this;
     }
-    validate(field){
+    async validate(field){
         field=$(field);
         if(field.is('option')){
             field=field.parent();
@@ -73,17 +73,14 @@ class Form{
             fac=field.attr('fac'),
             des=field.attr('des');
 
-        this.validatePass[name]=false;
-
         if(!fac){
-            this.validatePass[name]=true;
-            return this;
+            return true;
         }
         //识别有否存在REQ参数
         if(fac.search(/REQ/i)>-1){
             if(this.data[name]===''||this.data[name]===undefined){
                 tip.html(this.options.errorTemplate(this.options.msgRequired.replace('%s',des)));
-                return this;
+                return false;
             }
         }
         //识别长度参数?-?
@@ -93,52 +90,50 @@ class Form{
             if(lengthInfo.length==2){
                 if(this.data[name].length<lengthInfo[0]||this.data[name].length>lengthInfo[1]){
                     tip.html(this.options.errorTemplate(this.options.msgLength.replace('%s',des).replace('%s',lengthMatch[0])));
-                    return this;
+                    return false;
                 }
             }else{
                 if(this.data[name].length>lengthInfo[0]){
                     tip.html(this.options.errorTemplate(this.options.msgMax.replace('%s',des).replace('%s',lengthMatch[0])));
-                    return this;
+                    return false;
                 }
             }
         }
         //识别type参数
-        var typePass=true;
         for(let key in this.type){
             var keyMatch=fac.match(new RegExp(key,'i'));
             if(this.data[name]!=''&&keyMatch&&!this.type[key].test(this.data[name])){
                 tip.html(this.options.errorTemplate(this.options[`msg${key}`].replace('%s',des)));
-                typePass=false;
+                return false
                 break;
             }
         }
-        if(!typePass){
-            return this;
-        }
+
+        //用户自定义校验中间件
         if(this.middleware[name]&&this.middleware[name].value!==this.data[name]&&this.middleware[name].func&&this.middleware[name].func.length>0){
-            Promise.all(this.middleware[name].func.map(n=>{
+            tip.html(this.options.loadingTemplate());
+            let res=await Promise.all(this.middleware[name].func.map(n=>{
                 return new Promise((resolve,reject)=>{
                     n(this.data[name],resolve,reject);
                 });
             })).then(()=>{
                 this.middleware[name].value=this.data[name];
-                this.validatePass[name]=true;
-                tip.html('');
+                return true;
             }).catch((message)=>{
                 tip.html(this.options.errorTemplate(message));
+                return false;
             });
-            tip.html(this.options.errorTemplate('正在执行校验'));
-        }else{
-            this.validatePass[name]=true;
-            tip.html('');
+            if(!_.every(res)){
+                return false;
+            }
         }
-        return this;
+        tip.html('');
+        return true;
     }
     validateAll(){
-        var _this=this;
-        this.$el.find(this.options.fieldSelector).each(function(){
-            _this.validate(this);
-        });
+        return Promise.all(_.map(this.$el.find(this.options.fieldSelector),n=>{
+            return this.validate(n);
+        }));
     }
     _bindEvent(){
         var _this=this;
@@ -160,28 +155,28 @@ class Form{
         }).on('form-submit',()=>this.submit());
     }
     submit(){
-        this.validateAll();
-        return new Promise((resolve, reject)=>{
-            var validatePass=this.validatePass;
-            if(!_.every(validatePass)){
-                reject(new Error(`表单验证不能通过 from:"${this.action}"`));
-                return;
-            }
-            if(this.options.beforeSubmit.call(this)===false){
-                reject(new Error(`请求被beforeSubmit阻止 from:"${this.action}"`));
-                return;
-            }
-            resolve();
-        }).then((res)=>{
-            return this.$el.ajax({
-                type:this.method,
-                url:this.action,
-                data:this.data,
-                error:this.options.error
-            }).success((res)=>{
-                this.options.success.call(this,res);
-                return res;
-            }).getPromise();
+        return this.validateAll().then((res)=>{
+            return new Promise((resolve, reject)=>{
+                if(!_.every(res)){
+                    reject(new Error(`表单验证不能通过 from:"${this.action}"`));
+                    return;
+                }
+                if(this.options.beforeSubmit.call(this)===false){
+                    reject(new Error(`请求被beforeSubmit阻止 from:"${this.action}"`));
+                    return;
+                }
+                resolve();
+            }).then((res)=>{
+                return this.$el.ajax({
+                    type:this.method,
+                    url:this.action,
+                    data:this.data,
+                    error:this.options.error
+                }).success((res)=>{
+                    this.options.success.call(this,res);
+                    return res;
+                }).getPromise();
+            });
         });
     }
     _setType(){
@@ -219,6 +214,9 @@ class Form{
             tipClass:'error',
             errorTemplate(msg){
                 return `<i></i>${msg}`;
+            },
+            loadingTemplate(){
+                return '<i class="form-field-loading"></i>';
             },
             beforeSubmit(){},
             success(){},
