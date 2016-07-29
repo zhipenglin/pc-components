@@ -17,6 +17,9 @@
         error:function(type,data){
             console.log('出错啦');
             return false;
+        },
+        beforeSubmit(){
+            this.data.id=123;
         }
     }).data('form').use('user_name',function(value,resolve,reject){
         console.log(value);
@@ -26,7 +29,7 @@
     }).use('user_name',function(value,resolve,reject){
         console.log(value);
         setTimeout(function(){
-            reject('错误');
+            resolve('错误');
         },2000);
     });
 </script>
