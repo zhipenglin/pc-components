@@ -38,7 +38,7 @@ class Upload{
         this._bindInputEvent();
     }
     _bindInputEvent(){
-        this.input.on('change',(e)=>{
+        this.input.on('change',(event)=>{
             this.files=event.target.files;
             this.send();
         });
